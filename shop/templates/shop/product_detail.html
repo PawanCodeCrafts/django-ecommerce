@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block content %}
+
+<!-- *** bread Crumb *** -->
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb mt-5">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Product_detail</li>
+    </ol>
+</nav>
+
+<!-- *** product detail section *** -->
+<div class="row mt-5">
+    <div class="col-md-6 text-center">
+        {% if product.image %}
+        <img src="{{ product.image.url }}" class="img-fluid rounded shadow"
+            style="max-height: 500px; width: 500px; object-fit: cover;">
+        {% endif %}
+    </div>
+    <div class="col-md-6">
+        <h1 class="display-4">{{ product.name }}</h1>
+        <hr>
+        <p class="mt-4 lead">{{ product.description }}</p>
+        <h5>Price: <span class="text-success">₹{{ product.price }}</span></h5>
+
+        <div class="mt-5">
+            <a href="{% url 'shop:add_to_cart' product.pk %}" class="btn btn-warning btn-lg me-2">Add to Cart</a>
+            <button class="btn btn-dark btn-lg">Buy Now</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

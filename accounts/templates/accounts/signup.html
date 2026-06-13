@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-4 card p-4 shadow-sm">
+            <h2 class="text-center mb-4">Create Account</h2>
+
+            <form method="POST">
+                {% csrf_token %}
+
+                {% for field in form %}
+                <div class="mb-3">
+                    <label class="form-label" style="font-size: 17px;">
+                        {{ field.label }} : 
+                    </label>
+                    {{ field }} 
+                    {% if field.errors %}
+                    <small class="text-danger">{{ field.errors }}</small>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                <button type="submit" class="btn btn-warning w-100 shadow-none">Sign Up</button>
+                 <p class="mt-2">Already have an account? <a href="{% url 'accounts:login' %}">Login here.</a></p>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

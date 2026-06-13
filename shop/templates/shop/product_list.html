@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}
+{% if category %}{{ category.name }} {% else %}Products{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="row mt-5">
+
+    <!-- ******** Category filter sidebar ******** -->
+    <div class="col-md-3 mt-5 py-5">
+        <div class="list-group shadow-sm bg-light">
+            <a href="{% url 'shop:product_list' %}"
+                class="list-group-item list-group-item-action {% if not category %}bg-warning{% endif %}">
+                All Categories
+            </a>
+            {% for c in categories %}
+            <a href="{% url 'shop:product_list_by_category' c.slug %}"
+                class="list-group-item list-group-item-action {% if category.slug == c.slug %}bg-warning{% endif %}">
+                {{ c.name }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- ******** Products display section ******** -->
+    <div class="col-md-9">
+        <h1 class="h1 text-center mb-5"> {% if category %} {{category.name}} Products {% else %} All Products {% endif %}</h1>
+         <!-- ******** FILTER BAR ******** -->
+    <form method="GET" class="row g-3 mb-4 p-3 shadow-sm bg-light rounded">
+
+        <!-- ******** Min Price ******** -->
+        <div class="col-md-2">
+            <input type="number" name="min_price" class="form-control" placeholder="Min ₹"
+                value="{{ request.GET.min_price }}">
+        </div>
+
+        <!-- ******** Max Price ******** -->
+        <div class="col-md-2">
+            <input type="number" name="max_price" class="form-control" placeholder="Max ₹"
+                value="{{ request.GET.max_price }}">
+        </div>
+
+        <!-- ******** Sorting ******** -->
+        <div class="col-md-3">
+            <select name="sort" class="form-select">
+                <option value="">Sort By</option>
+                <option value="low_to_high" {% if request.GET.sort == 'low_to_high' %}selected{% endif %}>
+                    Price: Low → High
+                </option>
+                <option value="high_to_low" {% if request.GET.sort == 'high_to_low' %}selected{% endif %}>
+                    Price: High → Low
+                </option>
+                <option value="newest" {% if request.GET.sort == 'newest' %}selected{% endif %}>
+                    Newest
+                </option>
+            </select>
+        </div>
+
+        <!-- ******** Buttons ******** -->
+        <div class="col-md-2 d-flex gap-2">
+            <button type="submit" class="btn btn-warning w-100">Apply</button>
+            <a href="{% url 'shop:product_list' %}" class="btn btn-secondary w-100">Clear</a>
+        </div>
+
+    </form>
+
+        <div class="row">
+            {% for p in products %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    {% if p.image %}
+                    <img src="{{ p.image.url }}" class="card-img-top" alt="{{ p.name }}"
+                        style="height: 200px; object-fit: cover;">
+                    {% endif %}
+                    <div class="card-body">
+                        <h4 class="card-title">
+                        <a href="{% url 'shop:product_detail' p.pk p.slug %}" class="text-decoration-none text-dark">
+    {{ p.name }}
+</a></h4>
+                        <p class="card-text text-success fw-bold">₹{{ p.price }}</p>
+                        <a href="{% url 'shop:product_detail' p.id p.slug %}" class="btn btn-warning btn-sm">View
+                            Product</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <h3>No products found.</h3>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- ******** Pagination section ******** -->
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+
+                {% if products.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{products.previous_page_number}}
+&search={{request.GET.search}}
+&min_price={{request.GET.min_price}}
+&max_price={{request.GET.max_price}}
+&sort={{request.GET.sort}}">
+    Previous
+</a>  </li>
+                {% endif %}
+
+                <li class="page-item"><span class="page-link">Page {{products.number}} of
+                        {{products.paginator.num_pages}}</span></li>
+                        
+                {% if products.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{products.next_page_number}}
+&search={{request.GET.search}}
+&min_price={{request.GET.min_price}}
+&max_price={{request.GET.max_price}}
+&sort={{request.GET.sort}}">
+    Next
+</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</div>
+{% endblock %}
