@@ -76,6 +76,12 @@ class Address(models.Model):
     street = models.CharField(max_length=255) 
     pincode = models.CharField(max_length=10)
     is_default = models.BooleanField(default=False)
+    GENDER_CHOICES = {
+        'M':'Male',
+        'F':'Female',
+        'O':'Other',
+    }
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, null=True, blank=True)
 
     def __str__(self):
         return f"{self.full_name} - {self.city}"

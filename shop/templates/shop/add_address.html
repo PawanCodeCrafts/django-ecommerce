@@ -10,46 +10,64 @@
                 <div class="card-header bg-dark text-white">
                     <h4 class="mb-0 text-center">Add Shipping Address</h4>
                 </div>
-                <div class="card-body">
+                <div class="card-body mt-3">
                     <form method="POST">
                         <div class="row g-3">
 
-                           <div class="col-md-"> 
-                            <label for="full_name" class="form-label"> Full Name :</label>
-                            <input type="text" class="form-control">
-                           </div>
-                           <div class="col-md-"> 
-                            <label for="phone_number" class="form-label"> Phone Number :</label>
-                            <input type="text" class="form-control">
-                           </div>
-                           <div class="col-md-"> 
-                            <label for="country" class="form-label"> Country :</label>
-                            <input type="text" class="form-control">
-                           </div>
-                           <div class="col-md-"> 
-                            <label for="state" class="form-label"> State :</label>
-                            <input type="text" class="form-control">
-                           </div>
-                           <div class="col-md-"> 
-                            <label for="city" class="form-label"> City :</label>
-                            <input type="text" class="form-control">
-                           </div>
-                           <div class="col-md-"> 
-                            <label for="street" class="form-label"> Street :</label>
-                            <input type="text" class="form-control">
-                           </div>
-                           <div class="col-md-"> 
-                            <label for="" class="form-label"></label>
-                            <input type="text" class="form-control">
-                           </div>
-                           <div class="col-md-"> 
-                            <label for="" class="form-label"></label>
-                            <input type="text" class="form-control">
-                           </div>
-                           <div class="col-md-"> 
-                            <label for="" class="form-label"></label>
-                            <input type="text" class="form-control">
-                           </div>
+                            <div class="col-md-12">
+                                <label for="full_name" class="form-label fw-medium"> Full Name :</label>
+                                <input type="text" name="full_name" class="form-control" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="phone_number" class="form-label fw-medium"> Phone Number :</label>
+                                <input type="tel" name="phone" pattern="[6-9][0-9]{9}" class="form-control"
+                                    placeholder="example: 9876543210"
+                                    title="Please enter a valid 10-digit Indian mobile number starting with 6, 7, 8, or 9."
+                                    required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for='gender' class="form-label">Gender :</label>
+                                <select name="gender" class="form-select">
+                                    <option value="" disabled selected>Select Gender</option>
+                                    <option value="M">Male</option>
+                                    <option value="F">Female</option>
+                                    <option value="O">Other</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="country" class="form-label fw-medium"> Country :</label>
+                                <input type="text" name="country" class="form-control">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="state" class="form-label fw-medium"> State :</label>
+                                <input type="text" name="state" class="form-control">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="city" class="form-label fw-medium"> City :</label>
+                                <input type="text" name="city" class="form-control">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="pincode" class="form-label fw-medium"> Pincode :</label>
+                                <input type="text" pattern='[0-9]{6}' text="pincode must have digits only" name="pincode" class="form-control">
+                            </div>
+                            <div class="col-md-12">
+                                <label for="street" class="form-label fw-medium"> Flat, House no., Building, Company,
+                                    Apartment / Street :</label>
+                                <input type="text" name="street" class="form-control">
+                            </div>
+
+                            <div class="col-md-12 mt-4">
+                                <div class="form-check">
+                                    <input type="checkbox" name="defaultcheck" class="form-check-input">
+
+                                    <label for="defaultcheck" class="form-check-label fw-normal">Make this my default
+                                        address</label>
+                                </div>
+                            </div>
+
+                            <div class="mt-4">
+                                <button type="submit" class="col-12 btn btn-warning fw-medium">Save Address</button>
+                            </div>
 
                         </div>
                     </form>
