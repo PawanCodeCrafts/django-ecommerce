@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm p-4">
+                <h3 class="mb-4">📋 Select Your Delivery Address</h3>
+                <hr>
+
+                <form method="POST" action="{% url 'shop:checkout' %}">
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        {% for addr in addresses %}
+                            <div class="col-md-12 mb-3">
+                                <div class="card p-3 {% if addr.is_default %}border-warning border-2 bg-light{% else %}border-secondary-subtle{% endif %}">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h5 class="card-title mb-1 fw-bold">
+                                                {{ addr.full_name }}
+                                                {% if addr.is_default %}
+                                                    <span class="badge bg-warning text-dark ms-2">Default</span>
+                                                {% endif %}
+                                            </h5>
+                                            <p class="card-text mb-1">{{ addr.street }}, {{ addr.city }}, {{ addr.state }} - {{ addr.pincode }}</p>
+                                            <p class="card-text text-secondary mb-0"><strong>📞 Phone:</strong> {{ addr.phone_number }}</p>
+                                        </div>
+                                        
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="selected_address" value="{{ addr.id }}" id="addr_{{ addr.id }}" {% if addr.is_default %}checked{% endif %} required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="mt-4 d-flex justify-content-between align-items-center">
+                        <a href="{% url 'shop:add_address' %}" class="btn btn-outline-dark">+ Add Another New Address</a>
+                        <button type="submit" class="btn btn-warning fw-bold px-4 py-2">Confirm Address and Proceed <ion-icon name="arrow-forward-outline"></ion-icon></button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

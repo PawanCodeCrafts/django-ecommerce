@@ -11,7 +11,8 @@
                     <h4 class="mb-0 text-center">Add Shipping Address</h4>
                 </div>
                 <div class="card-body mt-3">
-                    <form method="POST">
+                    <form method="POST" action="{% url 'shop:add_address' %}">
+                        {% csrf_token %}
                         <div class="row g-3">
 
                             <div class="col-md-12">
@@ -20,7 +21,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="phone_number" class="form-label fw-medium"> Phone Number :</label>
-                                <input type="tel" name="phone" pattern="[6-9][0-9]{9}" class="form-control"
+                                <input type="tel" name="phone_number" pattern="[6-9][0-9]{9}" class="form-control"
                                     placeholder="example: 9876543210"
                                     title="Please enter a valid 10-digit Indian mobile number starting with 6, 7, 8, or 9."
                                     required>

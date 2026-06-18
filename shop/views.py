@@ -107,12 +107,49 @@ def update_cart(request, pk, action):
     item.save()
     return redirect('shop:cart_display')
 
+@login_required
 def checkout(request):
-    user_address =  Address.objects.filter(user=request.user)
-    if user_address.exists():
-        return render(request, 'shop/checkout_summary.html',{'addresses':user_address})
-    else :
+    user_addresses = Address.objects.filter(user=request.user)
+    if not user_addresses.exists():
         return redirect('shop:add_address')
 
+    if request.method == 'POST':
+        chosen_address_id = request.POST.get('selected_address')
+        request.session['selected_address_id'] = chosen_address_id
+
+        return redirect('shop:order_summary') 
+
+    return render(request, 'shop/checkout_summary.html', {'addresses': user_addresses})
+
 def add_address(request):
+    if request.method == 'POST':
+        user = request.user
+        full_name = request.POST.get('full_name')  
+        phone_number = request.POST.get('phone_number')  
+        country = request.POST.get('country')  
+        state = request.POST.get('state')  
+        city = request.POST.get('city')  
+        street = request.POST.get('street')  
+        pincode = request.POST.get('pincode')  
+        is_default = request.POST.get('is_default')=='on'
+        gender = request.POST.get('gender')
+
+        if is_default:
+            Address.objects.filter(user=user, is_default=True).update(is_default=False)
+
+        Address.objects.create(
+            user = user,
+            full_name = full_name,
+            phone_number = phone_number,
+            country = country,
+            state = state,
+            city = city,
+            street = street,
+            pincode = pincode,
+            is_default = is_default,
+            gender = gender,
+        )
+
+        return redirect("shop:checkout")
+
     return render(request, 'shop/add_address.html')
