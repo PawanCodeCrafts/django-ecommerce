@@ -153,3 +153,19 @@ def add_address(request):
         return redirect("shop:checkout")
 
     return render(request, 'shop/add_address.html')
+
+def order_summary(request):
+    cart = Cart.objects.get(user=request.user)
+    address_id = request.session.get('selected_address_id')
+    
+    address = None
+    if address_id:
+        address = Address.objects.get(id = address_id)
+    
+    context = {
+        'cart' : cart,
+        'address' : address,
+    }
+
+    return render(request, 'shop/order_summary.html', context)
+
