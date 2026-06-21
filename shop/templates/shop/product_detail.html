@@ -26,10 +26,22 @@
         <p class="mt-4 lead">{{ product.description }}</p>
         <h5>Price: <span class="text-success">₹{{ product.price }}</span></h5>
 
+{% if product.stock > 0 %}
         <div class="mt-5">
             <a href="{% url 'shop:add_to_cart' product.pk %}" class="btn btn-warning btn-lg me-2">Add to Cart</a>
-            <button class="btn btn-dark btn-lg">Buy Now</button>
+            <a href="{% url 'shop:add_to_cart' product.pk %}?action=buy_now" class="text-decoration-none btn btn-dark btn-lg gap-2">
+    Buy Now <ion-icon name="flash-sharp"></ion-icon>
+</a>
         </div>
+
+    {% else %}
+    <br>
+    <h6 class="text-danger w-100 fw-bold" disabled>
+        ❌ Oops!! product is Out of Stock
+    </h6>
+{% endif %}
     </div>
 </div>
+
+
 {% endblock %}

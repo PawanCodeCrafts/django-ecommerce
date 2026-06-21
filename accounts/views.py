@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from .forms import UserSignUpForm, UserLoginForm
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
+from django.views.decorators.http import require_POST
 
 def signup_view(request):
     if request.method == 'POST':
@@ -33,6 +34,8 @@ def login_view(request):
     
     return render(request, 'accounts/login.html', {'form': form})
 
+@require_POST
 def logout_view(request):
     logout(request)
-    return redirect('accounts:login')
+    messages.success(request, 'You have been successfully logged out.')
+    return redirect('shop:product_list')

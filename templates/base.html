@@ -5,9 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <title> D-Kart | {% block title %}{% endblock %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -25,7 +23,6 @@
                         <button class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                             Product Categories
                         </button>
-
                         <ul class="dropdown-menu dropdown-menu-dark">
                             {% for x in all_categories %}
                             <li><a class="dropdown-item"
@@ -35,27 +32,30 @@
                     </li>
                     {% if request.user.is_authenticated %}
                     <li class='nav-item px-3'>
-    <a href="{% url 'shop:cart_display' %}" class="nav-link position-relative d-inline-block">
-        <ion-icon name="cart" style="font-size: 25px; color:white;"></ion-icon>
-        
-        
-            <span class="position-absolute top-0 start-100 translate-middle badge rounded bg-warning text-dark" style="font-size: 0.7rem;">
-                {% if request.user.cart %}
-                    {{ request.user.cart.get_cart_total_quantity }}
-                {% else %}
-                    0
-                {% endif %}
-            </span>
-             </a>
-</li>
-        {% endif %}
-   
+                        <a href="{% url 'shop:cart_display' %}" class="nav-link position-relative d-inline-block">
+                            <ion-icon name="cart" style="font-size: 25px; color:white;"></ion-icon>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded bg-warning text-dark"
+                                style="font-size: 0.7rem;">
+                                {% if request.user.cart %}
+                                {{ request.user.cart.get_cart_total_quantity }}
+                                {% else %}
+                                0
+                                {% endif %}
+                            </span>
+                        </a>
+                    </li>
+                    {% endif %}
                 </ul>
 
                 <div class="navbar-nav ms-auto px-5">
-                    {% if user.is_authenticated %}
+                    {% if request.user.is_authenticated %}
                     <span class="nav-link text-light text-capitalize fw-bolder">Hi, {{ user.username }}</span>
-                    <a class="nav-item nav-link text-white" href="{% url 'accounts:logout' %}">Logout</a>
+                    <form action="{% url 'accounts:logout' %}" method="post" class="d-inline m-0 p-0">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-link nav-item nav-link text-white" style="text-decoration: none;">
+                Logout
+            </button>
+        </form>
                     {% else %}
                     <a class="nav-item nav-link" href="{% url 'accounts:login' %}">Login</a>
                     <a class="nav-item nav-link" href="{% url 'accounts:signup' %}">Register</a>
@@ -71,22 +71,32 @@
         </div>
     </nav>
 
-    <div class="container mt-3">
-        {% if messages %}
+    {% if messages %}
+    <div class="container my-3" id="django-messages-container">
         {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-            {{ message }}
+        <div class="alert alert-{% if message.tags == 'error' %}danger{% elif message.tags == 'success' %}success{% elif message.tags == 'warning' %}warning{% else %}info{% endif %} alert-dismissible fade show fw-bold shadow-sm d-flex align-items-center gap-2"
+            role="alert">
+
+            {% if message.tags == 'error' %}
+            <ion-icon name="alert-circle-outline" style="font-size: 22px;"></ion-icon>
+            {% elif message.tags == 'success' %}
+            <ion-icon name="checkmark-circle-outline" style="font-size: 22px;"></ion-icon>
+            {% elif message.tags == 'warning' %}
+            <ion-icon name="warning-outline" style="font-size: 22px;"></ion-icon>
+            {% else %}
+            <ion-icon name="information-circle-outline" style="font-size: 22px;"></ion-icon>
+            {% endif %}
+
+            <div>{{ message }}</div>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         {% endfor %}
-        {% endif %}
     </div>
+    {% endif %}
 
     <div class="container">
-
         {% block content %}
         {% endblock %}
-    </div>
     </div>
 
     <footer class="py-3 mt-5 border-top text-center text-muted">
@@ -94,13 +104,10 @@
         <p>made with ❤ by Pawan</p>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
 </body>
-
 </html>

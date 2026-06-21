@@ -88,9 +88,9 @@
                         <span class="fs-5 fw-bold text-primary">₹{{ cart.get_grand_price }}</span>
                     </div>
 
-                    <form method="POST" action="">
+                    <form method="POST" action="{% url 'shop:place_order' %}">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-warning btn-lg w-100 fw-bold shadow-sm">
+                        <button type="submit" class="text-decoration-none btn btn-warning btn-lg w-100 fw-bold shadow-sm">
                             Proceed to  Payment <ion-icon name="arrow-forward-sharp"></ion-icon>
                         </button>
                     </form>

@@ -93,7 +93,8 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
     order_status = models.CharField(default='Pending' , max_length=20)
-    payment_id = models.CharField(max_length=100, blank=True, null=True)
+    # payment_id = models.CharField(max_length=100, blank=True, null=True)
+    # ordered = models.BooleanField(default=False)
 
     def __str__(self):
         return f'Order {self.id} by {self.user.username}'

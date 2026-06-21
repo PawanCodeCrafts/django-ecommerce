@@ -1,8 +1,9 @@
 from django.shortcuts import get_object_or_404, render, redirect
-from .models import Category, Product, Cart, CartItem, Address
+from .models import Category, Product, Cart, CartItem, Address, Order, OrderItem
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 
 
@@ -67,15 +68,18 @@ def product_detail(request, pk, slug):
 
 @login_required(login_url='accounts:login')
 def add_to_cart(request, pk):
-    product_in_cart = get_object_or_404(Product , pk=pk, available=True)
-    cart, created = Cart.objects.get_or_create(user = request.user)
+    product_in_cart = get_object_or_404(Product, pk=pk, available=True)
+    cart, created = Cart.objects.get_or_create(user=request.user)
 
-    cart_item , created = CartItem.objects.get_or_create(cart=cart, product=product_in_cart)
+    cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product_in_cart)
 
     if not created:
         cart_item.quantity += 1
         cart_item.save()
     
+    if request.GET.get('action') == 'buy_now':
+        return redirect('shop:checkout') 
+
     return redirect('shop:cart_display')
 
 @login_required(login_url='accounts:login')
@@ -96,12 +100,19 @@ def remove_product(request, pk):
 def update_cart(request, pk, action):
     item = get_object_or_404(CartItem, pk=pk, cart__user=request.user)
     if action == 'increase':
-        item.quantity+=1
+        if item.quantity + 1 > item.product.stock:
+            messages.error(
+                request, 
+                f"Oops! Only {item.product.stock} units of '{item.product.name}' are available in stock."
+            )
+            return redirect('shop:cart_display')
+        else:
+            item.quantity += 1
     elif action == "decrease":
         if item.quantity > 1:
             item.quantity -= 1
         else:
-            item.quantity == 1
+            item.quantity = 1  
             return redirect('shop:cart_display')
 
     item.save()
@@ -168,4 +179,39 @@ def order_summary(request):
     }
 
     return render(request, 'shop/order_summary.html', context)
+
+@login_required(login_url='accounts:login')
+def place_order(request):
+    address_id = request.session.get('selected_address_id')
+    selected_address = Address.objects.filter(id=address_id, user=request.user).first()
+    
+    active_cart = Cart.objects.filter(user=request.user).first()
+
+    if active_cart and selected_address:
+        cart_items = CartItem.objects.filter(cart=active_cart)
+        new_order = Order.objects.create(
+            user = request.user,
+            address = selected_address, 
+            total_price = active_cart.get_grand_price(),
+        )
+
+        for item in cart_items:
+            OrderItem.objects.create(
+                order = new_order,
+                product = item.product,
+                price = item.product.price,
+                quantity = item.quantity, 
+            )
+        
+        item.product.stock -= item.quantity
+        item.product.save()
+
+        active_cart.delete()
+
+        return redirect('shop:order_success') 
+    return redirect('shop:cart_display')
+    
+def order_success(request):
+    return render(request, 'shop/order_success.html')
+
 

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %} Order confirmation {% endblock %}
+
+{% block content %}
+    <style>
+        .success-card {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            max-width: 500px;
+            width: 100%;
+            margin: auto;
+            margin-top: 50px;
+        }
+        /* Ion-icon ke liye styling aur size */
+        .tick-icon {
+            font-size: 90px; 
+            color: #198754;
+            animation: scaleUp 0.5s ease-in-out;
+        }
+        @keyframes scaleUp {
+            0% { transform: scale(0); }
+            100% { transform: scale(1); }
+        }
+    </style>
+
+    <div class="container d-flex justify-content-center px-3">
+        <div class="success-card text-center">
+            <div class="mb-4">
+                <ion-icon name="checkmark-circle" class="tick-icon"></ion-icon>
+            </div>
+            
+            <h2 class="fw-bold text-dark mb-2">Order Confirmed!</h2>
+            
+            <p class="text-muted mb-4">
+                Thank you for your purchase! Your order has been placed successfully and is now being processed.
+            </p>
+            
+            <hr class="text-muted my-4 opacity-25">
+            
+            <div class="d-grid gap-2">
+                <a href="{% url 'shop:product_list' %}" class="btn btn-warning btn-lg fw-bold shadow-sm py-2 text-dark d-flex align-items-center justify-content-center gap-2">
+                    Continue Shopping <ion-icon name="arrow-forward-sharp"></ion-icon>
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
