@@ -193,6 +193,7 @@ def place_order(request):
             user = request.user,
             address = selected_address, 
             total_price = active_cart.get_grand_price(),
+            order_status = "Out for Delivery"
         )
 
         for item in cart_items:
@@ -213,5 +214,15 @@ def place_order(request):
     
 def order_success(request):
     return render(request, 'shop/order_success.html')
+
+@login_required(login_url="accounts:login")
+def order_history(request):
+    user_orders = Order.objects.filter(user=request.user).order_by('-created_at')
+
+    context = {'user_orders': user_orders}
+    return render(request, 'shop/order_history.html', context )
+
+
+
 
 

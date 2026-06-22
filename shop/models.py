@@ -1,5 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
+import uuid
+
+# uuid generation
+def generate_uuid():
+    return uuid.uuid4().hex[:8].upper()
 
 # category of products
 class Category(models.Model):
@@ -88,13 +93,13 @@ class Address(models.Model):
 
 # order details
 class Order(models.Model):
+    order_uuid = models.CharField(max_length=20, unique=True, default=generate_uuid, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     address =  models.ForeignKey(Address, on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
     order_status = models.CharField(default='Pending' , max_length=20)
     # payment_id = models.CharField(max_length=100, blank=True, null=True)
-    # ordered = models.BooleanField(default=False)
 
     def __str__(self):
         return f'Order {self.id} by {self.user.username}'

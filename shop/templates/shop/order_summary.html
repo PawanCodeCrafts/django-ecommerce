@@ -91,12 +91,12 @@
                     <form method="POST" action="{% url 'shop:place_order' %}">
                         {% csrf_token %}
                         <button type="submit" class="text-decoration-none btn btn-warning btn-lg w-100 fw-bold shadow-sm">
-                            Proceed to  Payment <ion-icon name="arrow-forward-sharp"></ion-icon>
+                            Place Order [COD] <ion-icon name="arrow-forward-sharp"></ion-icon>
                         </button>
                     </form>
                     
                     <div class="text-center mt-3">
-                        <a href="{% url 'shop:checkout' %}" class="text-decoration-none text-muted small">← Go Back to Addresses</a>
+                        <a href="{% url 'shop:cart_display' %}" class="text-decoration-none text-muted small">← Go Back to cart</a>
                     </div>
                 </div>
             </div>
