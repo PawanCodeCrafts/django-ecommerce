@@ -1,6 +1,5 @@
 from django.contrib import admin
-from .models import Category, Product, Cart, CartItem, Address, Order, OrderItem
-
+from .models import Category, Product, Cart, CartItem, Address, Order, OrderItem, ProductReview
 
 # customized Category Model
 @admin.register(Category)
@@ -21,5 +20,6 @@ admin.site.register(CartItem)
 admin.site.register(Address)
 admin.site.register(Order)
 admin.site.register(OrderItem)
+admin.site.register(ProductReview)
 
 

@@ -166,12 +166,12 @@ def add_address(request):
     return render(request, 'shop/add_address.html')
 
 def order_summary(request):
-    cart = Cart.objects.get(user=request.user)
+    cart, created = Cart.objects.get_or_create(user=request.user)
     address_id = request.session.get('selected_address_id')
     
     address = None
     if address_id:
-        address = Address.objects.get(id = address_id)
+        address = get_object_or_404(Address, id=address_id)
     
     context = {
         'cart' : cart,
@@ -222,7 +222,21 @@ def order_history(request):
     context = {'user_orders': user_orders}
     return render(request, 'shop/order_history.html', context )
 
+# handles rating and review
+@login_required(login_url='accounts:login')
+def product_review(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    if request.method == 'POST':
+        rating = request.POST.get('rating')
+        comment = request.POST.get('comment')
 
+        ProductReview.objects.create(
+            user = request.user,
+            rating = rating,
+            comment = comment,
+            product = product,
+        )
 
-
+        return redirect('shop/product_detail.html', id=product_id, slug=product.slug)
+    return redirect('store:product_detail', id=product_id, slug=product.slug)
 
