@@ -1,0 +1,20 @@
+/* rating stars */
+.star-rating {
+    display: flex;
+    flex-direction: row-reverse; 
+    justify-content: flex-end;
+    gap: 5px;
+}
+.star-rating input { display: none; } 
+
+.star-rating label ion-icon {
+    font-size: 2.5rem;
+    color: #ccc; 
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.star-rating input:checked ~ label ion-icon,
+.star-rating label:hover ion-icon,
+.star-rating label:hover ~ label ion-icon {
+    color: #ffc107;
+}

@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, render, redirect
-from .models import Category, Product, Cart, CartItem, Address, Order, OrderItem
+from .models import Category, Product, Cart, CartItem, Address, Order, OrderItem, ProductReview
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
@@ -60,8 +60,17 @@ def product_list(request, category_slug=None):
 def product_detail(request, pk, slug): 
      product = get_object_or_404(Product , pk=pk, slug=slug, available=True)
 
+     has_bought = False
+     if request.user.is_authenticated:
+    
+       has_bought = OrderItem.objects.filter(
+        product=product,
+         order__user=request.user
+         ).exclude(order__order_status='Pending').exists()
+
      data2 = {
        'product' : product,
+       'has_bought': has_bought,
      }
 
      return render(request, 'shop/product_detail.html', data2)
@@ -224,19 +233,23 @@ def order_history(request):
 
 # handles rating and review
 @login_required(login_url='accounts:login')
+@login_required(login_url='accounts:login')
 def product_review(request, product_id):
     product = get_object_or_404(Product, id=product_id)
+    
     if request.method == 'POST':
         rating = request.POST.get('rating')
         comment = request.POST.get('comment')
-
-        ProductReview.objects.create(
-            user = request.user,
-            rating = rating,
-            comment = comment,
-            product = product,
+        ProductReview.objects.update_or_create(
+            user=request.user,    
+            product=product,
+            defaults={           
+                'rating': int(rating),
+                'comment': comment,
+            }
         )
 
-        return redirect('shop/product_detail.html', id=product_id, slug=product.slug)
-    return redirect('store:product_detail', id=product_id, slug=product.slug)
+        return redirect('shop:product_detail', pk=product_id, slug=product.slug)
+
+    return redirect('shop:product_detail', pk=product_id, slug=product.slug)
 

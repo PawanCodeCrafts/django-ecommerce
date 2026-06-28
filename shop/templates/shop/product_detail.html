@@ -26,29 +26,110 @@
         <p class="mt-4 lead">{{ product.description }}</p>
         <h5>Price: <span class="text-success">₹{{ product.price }}</span></h5>
 
-{% if product.stock > 0 %}
+        {% if product.stock > 0 %}
         <div class="mt-5">
             <a href="{% url 'shop:add_to_cart' product.pk %}" class="btn btn-warning btn-lg me-2">Add to Cart</a>
-            <a href="{% url 'shop:add_to_cart' product.pk %}?action=buy_now" class="text-decoration-none btn btn-dark btn-lg gap-2">
-    Buy Now <ion-icon name="flash-sharp"></ion-icon>
-</a>
+            <a href="{% url 'shop:add_to_cart' product.pk %}?action=buy_now"
+                class="text-decoration-none btn btn-dark btn-lg gap-2">
+                Buy Now <ion-icon name="flash-sharp"></ion-icon>
+            </a>
         </div>
 
-    {% else %}
-    
-    <br>
-    <h6 class="text-danger w-100 fw-bold" disabled>
-        ❌ Oops!! product is Out of Stock
-    </h6>
-{% endif %}
+        {% else %}
+
+        <br>
+        <h6 class="text-danger w-100 fw-bold" disabled>
+            ❌ Oops!! product is Out of Stock
+        </h6>
+        {% endif %}
     </div>
 </div>
 
-<div>
-    <h3>Product Reviews</h3>
-    <form action="{% url 'shop:product_review' id slug %}">
-    <p> stars</p>
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-5 mb-4">
+            <div class="card shadow-sm border-0 p-4 bg-light">
+                <h4 class="fw-bold mb-3 text-dark">Write a Customer Review</h4>
+                <hr class="mb-4">
+                {% if has_bought %}
+                <form action="{% url 'shop:product_review' product.id %}" method="POST">
+                    {% csrf_token %}
 
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Your Rating</label>
+                        <div class="star-rating">
+                            <input type="radio" id="star5" name="rating" value="5" required />
+                            <label for="star5"><ion-icon name="star"></ion-icon></label>
+
+                            <input type="radio" id="star4" name="rating" value="4" />
+                            <label for="star4"><ion-icon name="star"></ion-icon></label>
+
+                            <input type="radio" id="star3" name="rating" value="3" />
+                            <label for="star3"><ion-icon name="star"></ion-icon></label>
+
+                            <input type="radio" id="star2" name="rating" value="2" />
+                            <label for="star2"><ion-icon name="star"></ion-icon></label>
+
+                            <input type="radio" id="star1" name="rating" value="1" />
+                            <label for="star1"><ion-icon name="star"></ion-icon></label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="comment" class="form-label fw-semibold">Your Feedback</label>
+                        <textarea class="form-control border-0 shadow-sm" name="comment" id="comment" rows="4"
+                            placeholder="What did you like or dislike about this product?"></textarea>
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-dark btn-lg shadow-sm fw-bold">Submit Review</button>
+                    </div>
+                </form>
+                {%else%}
+                <div class="alert alert-warning text-center fw-semibold shadow-sm border-0" role="alert">
+                    🔒 You can only review products you have purchased.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-md-7">
+            <h4 class="fw-bold mb-3 text-dark">Customer Reviews ({{ product.productreview_set.count }})</h4>
+            <hr class="mb-4">
+
+            <div class="review-list" style="max-height: 500px; overflow-y: auto;">
+                {% for review in product.productreview_set.all %}
+                <div class="card shadow-sm border-0 p-3 mb-3 bg-white">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="fw-bold text-secondary">
+                            👤 {{ review.user.username|capfirst }}
+                        </span>
+                        <small class="text-muted">{{ review.date_added|date:"d M Y" }}</small>
+                    </div>
+
+                    <div class="mb-2 text-warning d-flex align-items-center">
+    {% for i in "12345"|make_list %}
+        {% if forloop.counter <= review.rating %}
+            <ion-icon name="star" style="font-size: 1.3rem; color: #ffc107;"></ion-icon> 
+        {% else %}
+            <ion-icon name="star-outline" style="font-size: 1.3rem; color: #ccc;"></ion-icon> 
+        {% endif %}
+    {% endfor %}
+    <span class="text-muted small ms-2">({{ review.rating }}/5)</span>
+</div>
+
+                    <p class="text-muted mb-0 bg-light p-2 rounded" style="font-style: italic;">
+                        "{{ review.comment }}"
+                    </p>
+                </div>
+                {% empty %}
+                <div class="text-center py-5 text-muted card border-0 shadow-sm">
+                    <p class="mb-0 fs-5">No reviews yet. Be the first to review this product! 🚀</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 </div>
 
 
